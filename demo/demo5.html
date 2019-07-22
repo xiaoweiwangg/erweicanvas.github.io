@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/underscore/underscore.js"></script>
+  </head>
+  <body>
+    <canvas>
+      your browser not supput canvas ,please update to new browser.
+    </canvas>
+    <script>
+      let canvas = $("canvas")[0];
+      let c = canvas.getContext("2d");
+      $(canvas).css({
+        border: "2px solid gray",
+        display: "block",
+        margin: "0 auto"
+      });
+      canvas.height = 500;
+      canvas.width = 500;
+      let rs = 25;
+      let cw = 500;
+      let ch = 500;
+      c.shadowColor='red';
+      c.shadowBlur=1;
+      c.shadowOffsetX=30;
+      c.shadowOffsetY=10;
+      c.rect(200,200,200,200)
+      c.stroke()
+      c.fill()
+    </script>
+  </body>
+</html>

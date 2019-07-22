@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/underscore/underscore.js"></script>
+  </head>
+  <body>
+    <canvas>
+      your browser not supput canvas ,please update to new browser.
+    </canvas>
+    <script>
+      let canvas = $("canvas")[0];
+      let c = canvas.getContext("2d");
+      $(canvas).css({
+        display: "block",
+        margin: "0 auto",
+        display: "block",
+        backgroundColor: "#1a2a3a"
+      });
+      //封装动画类
+      class Arc {
+        constructor(bo) {
+          this.r = bo.r || _.random(30, 50); //半径
+          this.x = bo.x || _.random(0, canvas.width - 50); //x 坐标
+          this.y = bo.y || _.random(0, canvas.height - 50); //y 坐标
+          this.sa = bo.sa || 0; //起始弧度
+          this.ea = bo.ea || 360; //结束弧度
+          this.color =
+            bo.color ||
+            `rgba(${_.random(0, 255)},${_.random(0, 255)},${_.random(0, 255)})`; //颜色
+          this.opacity = bo.opacity || 1; //透明度
+          this.fps = bo.fps || 60; //fps 帧率
+          this.speedx = bo.speedx || _.random(1, 4);
+          this.speedy = bo.speedy || _.random(1, 4);
+          this._init();
+        }
+        //初始canvas视图
+        _init() {
+          canvas.height = window.document.documentElement.clientHeight;
+          canvas.width = window.document.documentElement.clientWidth;
+          window.addEventListener("resize", () => {
+            this._init();
+          });
+        }
+        //更新位置
+        updata() {
+          if (this.x <= 0 + this.r) {
+            this.speedx = Math.abs(this.speedx);
+          }
+          if (this.x >= canvas.width - this.r) {
+            this.speedx = -this.speedx;
+          }
+          if (this.y <= 0 + this.r) {
+            this.speedy = Math.abs(this.speedy);
+          }
+          if (this.y >= canvas.height - this.r) {
+            this.speedy = -this.speedy;
+          }
+          this.x += this.speedx;
+          this.y += this.speedy;
+        }
+        //渲染动画
+        draw(ctx) {
+          ctx.beginPath();
+          ctx.fillStyle = this.color;
+          ctx.arc(this.x, this.y, this.r, this.sa, this.ea);
+          ctx.fill();
+        }
+      }
+      let config = {}; //配置
+      let Aarr = []; //球
+      for (let i = 0; i < 10; i++) {
+        Aarr.push(new Arc(config));
+      }
+      setInterval(() => {
+        // c.clearRect(0, 0, canvas.width, canvas.height);
+        c.fillStyle = "rgb(0, 0, 0, 0.25)";
+        c.fillRect(0, 0,canvas.width, canvas.height);
+        for (let i = 0; i < Aarr.length; i++) {
+          Aarr[i].updata();
+          Aarr[i].draw(c);
+        }
+      }, 1000 / 60);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/underscore/underscore.js"></script>
+  </head>
+  <body>
+    <canvas>
+      your browser not supput canvas ,please update to new browser.
+    </canvas>
+    <script>
+      let canvas = $("canvas")[0];
+      let c = canvas.getContext("2d");
+      $(canvas).css({
+        border: "2px solid gray",
+        display: "block",
+        margin: "0 auto",
+        backgroundColor:"#1a2a3a"
+      });
+      canvas.height = 500;
+      canvas.width = 500;
+      let rs = 30;
+      let cw = 500;
+      let ch = 500;
+      let json = [];
+      let cdata = () => {
+        for (let i = 0; i < 30; i++) {
+          json.push(_.random(0, 500));
+        }
+      };
+      cdata();
+      let color=`rgba(${_.random(0,255)},${_.random(0,255)},${_.random(0,255)},.5)`
+      let data = [{ ratio: json.map(x => 500 - x) }];
+      setInterval(() => {
+        c.beginPath()
+        c.lineWith=.5;
+        c.strokeStyle = color;
+        data[0].ratio.shift();
+        data[0].ratio.push(500 - _.random(0, 500));
+        c.clearRect(0, 0, cw, ch);
+        for (let i = 0; i < cw / rs; i++) {
+          c.moveTo(i * rs, 0);
+          c.lineTo(i * rs, cw);
+          c.moveTo(0, i * rs);
+          c.lineTo(cw, i * rs);
+        }
+        c.stroke();
+        c.beginPath();
+        c.lineWith=1.5;
+        c.strokeStyle = `greenyellow`;
+        for (let m = 0; m < data[0].ratio.length; m++) {
+          c.lineTo((m * cw) / rs, data[0].ratio[m]);
+        }
+        c.stroke();
+      }, 1000);
+    </script>
+  </body>
+</html>

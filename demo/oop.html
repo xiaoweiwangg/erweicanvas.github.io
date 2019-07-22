@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ZH-cn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>OOP</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas>
+      您的浏览器不支持canvas,请升级至最新版浏览器.
+    </canvas>
+    <script>
+      let canvas = document.querySelector("canvas");
+      let ctx = canvas.getContext("2d");
+
+      class Spri {
+        constructor(opt) {
+          //属性 : imgsrc,x,y,speed,w,h,fps,dir
+          this.imgsrc = opt.imgsrc; //图片源
+          this.x = opt.x === 0 ? 0 : opt.x || 256; //裁剪位置x坐标
+          this.y = opt.y === 0 ? 0 : opt.y || 256; //裁剪位置y坐标
+          this.speed = opt.speed || 1; //速度
+          this.w = opt.w || 256; //图片宽
+          this.h = opt.h || 256; //图高
+          this.fps = opt.fps || 10; //fps帧
+          this.dir = opt.dir || 6; //默认方向下
+          this.ix = opt.ix || 100; //目标x坐标
+          this.iy = opt.iy || 100; //目标y坐标
+          this.iw = opt.iw || 256; //目标大小
+          this.ih = opt.ih || 256; //目标大小
+          this.ds = opt.ds || 0;
+          this.timer = null;
+          this.canvasr();
+        }
+        //方法 :
+        //控制视图大小
+        canvasr() {
+          canvas.height = document.documentElement.clientHeight;
+          canvas.width = document.documentElement.clientWidth;
+          window.addEventListener("resize", this.canvasr);
+        }
+        //键盘控制
+        changedir(x) {
+          switch (x) {
+            case 38: //上
+              this.dir = 2;
+              this.ds = 1;
+              break;
+            case 40: //下
+              this.dir = 6;
+              this.ds = 2;
+              break;
+            case 37: //左
+              this.dir = 0;
+              this.ds = 3;
+              break;
+            case 39: //右
+              this.dir = 4;
+              this.ds = 4;
+              break;
+          }
+        }
+        //渲染动画
+        render(ctx) {
+          let img = new Image();
+          img.src = this.imgsrc;
+          img.onload = () => {
+            let index = -1;
+            if (Spri.save) {
+              return;
+            } else {
+              this.timer = setInterval(() => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                index++;
+                index %= 8;
+                switch (this.ds) {
+                  case 2:
+                    this.iy += this.speed;
+                    break;
+                  case 3:
+                    this.ix -= this.speed;
+                    break;
+                  case 1:
+                    this.iy -= this.speed;
+                    break;
+                  case 4:
+                    this.ix += this.speed;
+                    break;
+                }
+                ctx.drawImage(
+                  img, //img
+                  index * this.x, //裁剪 x 坐标
+                  this.dir * this.y, //裁剪 y 坐标
+                  this.w, //裁剪宽
+                  this.h, //裁剪高
+                  this.ix, //目标坐标
+                  this.iy, //目标坐标
+                  this.iw, //图片宽高
+                  this.ih //图片宽高
+                );
+              }, 1000 / this.fps);
+            }
+          };
+        }
+      }
+      let config = {
+        imgsrc: "../2.png",
+        speed: 3
+      };
+      let s = new Spri(config);
+      s.render(ctx);
+      window.addEventListener("keydown", e => {
+        s.changedir(e.keyCode);
+      });
+    </script>
+  </body>
+</html>
